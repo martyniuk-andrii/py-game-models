@@ -22,6 +22,14 @@ class Skill(models.Model):
         related_name="skills"
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "race"],
+                name="unique_skill_per_race"
+            )
+        ]
+
     def __str__(self) -> str:
         return (
             f"{self.name}, "

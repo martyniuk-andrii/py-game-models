@@ -9,43 +9,44 @@ def main() -> None:
         data_about_players = json.load(players)
 
     for player, data in data_about_players.items():
-        player_name = player
-        player_email = data.get("email")
-        player_bio = data.get("bio")
-        player_race = data.get("race")
-        race_skills = player_race.get("skills")
-        player_guild = data.get("guild")
+        name = player
+        email = data.get("email")
+        bio = data.get("bio")
+        race = data.get("race")
+        skills_in_race = race.get("skills") if race else None
+        guild = data.get("guild")
 
-        instance_race, create = Race.objects.get_or_create(
-            name=player_race.get("name"),
-            defaults={"description": player_race.get("description")}
+        race_in_database, create = Race.objects.get_or_create(
+            name=race.get("name"),
+            defaults={"description": race.get("description")}
         )
 
-        if race_skills:
-            for skill in player_race.get("skills"):
+        if skills_in_race:
+            for skill in skills_in_race:
                 Skill.objects.get_or_create(
                     name=skill.get("name"),
+                    race=race_in_database,
                     defaults={
                         "bonus": skill.get("bonus"),
-                        "race": instance_race
+
                     }
                 )
 
-        if player_guild:
-            instance_guild, created = Guild.objects.get_or_create(
-                name=player_guild.get("name"),
-                defaults={"description": player_guild.get("description")}
+        if guild:
+            guild_in_database, created = Guild.objects.get_or_create(
+                name=guild.get("name"),
+                defaults={"description": guild.get("description")}
             )
         else:
-            instance_guild = None
+            guild_in_database = None
 
         Player.objects.get_or_create(
-            nickname=player_name,
+            nickname=name,
             defaults={
-                "email": player_email,
-                "bio": player_bio,
-                "guild": instance_guild,
-                "race": instance_race
+                "email": email,
+                "bio": bio,
+                "guild": guild_in_database,
+                "race": race_in_database
             }
         )
 
