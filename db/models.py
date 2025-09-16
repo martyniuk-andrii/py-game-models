@@ -22,14 +22,6 @@ class Skill(models.Model):
         related_name="skills"
     )
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["name", "race"],
-                name="unique_skill_per_race"
-            )
-        ]
-
     def __str__(self) -> str:
         return (
             f"{self.name}, "
@@ -71,5 +63,5 @@ class Player(models.Model):
             f"{self.nickname} "
             f"(Email: {self.email}), "
             f"(Bio: {self.bio}), "
-            f"(Crated at: {self.created_at})"
+            f"(Created at: {self.created_at})"
         )

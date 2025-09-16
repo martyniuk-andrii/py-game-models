@@ -13,24 +13,25 @@ def main() -> None:
         email = data.get("email")
         bio = data.get("bio")
         race = data.get("race")
-        skills_in_race = race.get("skills") if race else None
         guild = data.get("guild")
 
-        race_in_database, create = Race.objects.get_or_create(
-            name=race.get("name"),
-            defaults={"description": race.get("description")}
-        )
-
-        if skills_in_race:
-            for skill in skills_in_race:
-                Skill.objects.get_or_create(
-                    name=skill.get("name"),
-                    race=race_in_database,
-                    defaults={
-                        "bonus": skill.get("bonus"),
-
-                    }
-                )
+        if race:
+            race_in_database, create = Race.objects.get_or_create(
+                name=race.get("name"),
+                defaults={"description": race.get("description")}
+            )
+            skills_in_race = race.get("skills")
+            if skills_in_race:
+                for skill in skills_in_race:
+                    Skill.objects.get_or_create(
+                        name=skill.get("name"),
+                        defaults={
+                            "bonus": skill.get("bonus"),
+                            "race": race_in_database,
+                        }
+                    )
+        else:
+            race_in_database = None
 
         if guild:
             guild_in_database, created = Guild.objects.get_or_create(
