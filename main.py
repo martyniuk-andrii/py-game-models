@@ -24,7 +24,7 @@ def main() -> None:
             if skills_in_race:
                 for skill in skills_in_race:
                     Skill.objects.get_or_create(
-                        name=f"{skill.get('name')}({race.get('name')})",
+                        name=skill.get("name"),
                         defaults={
                             "bonus": skill.get("bonus"),
                             "race": race_in_database,
